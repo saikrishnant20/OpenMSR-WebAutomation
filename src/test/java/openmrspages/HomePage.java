@@ -18,10 +18,10 @@ public class HomePage extends baseDriver {
 		super(driver);
 	}
 
-	public HomePage OpenMRSLandingPage() {
+	public HomePage openMRSLandingPage() {
 		try {
-			WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='content']/div[2]/div/h4")));
+			WebDriverWait waitopenmrs = new WebDriverWait(driver, Duration.ofSeconds(5));
+			waitopenmrs.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='content']/div[2]/div/h4")));
 			String actualtext=driver.findElement(By.xpath("//*[@id='content']/div[2]/div/h4")).getText();
 			Assert.assertEquals(actualtext, "Logged in as Super User (admin) at Inpatient Ward.");
 		}
@@ -32,14 +32,27 @@ public class HomePage extends baseDriver {
 		
 	}
 
-	public HomePage ClickOnLogout() {
+	public HomePage clickOnLogout() {
 		try {
-			WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"navbarSupportedContent\"]/ul/li[3]/a")));
+			WebDriverWait waitlogout = new WebDriverWait(driver, Duration.ofSeconds(5));
+			waitlogout.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"navbarSupportedContent\"]/ul/li[3]/a")));
 			driver.findElement(By.xpath("//*[@id='navbarSupportedContent']/ul/li[3]/a")).click();
 		}
 		catch(Exception e){
 			fail("Unable to click the Logout button");
+		}
+		return new HomePage(driver);
+		
+	}
+
+	public HomePage clickOnRegisterAPatientIcon() {
+		try {
+			WebDriverWait waitclickregpatient = new WebDriverWait(driver, Duration.ofSeconds(5));
+			waitclickregpatient.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#referenceapplication-registrationapp-registerPatient-homepageLink-referenceapplication-registrationapp-registerPatient-homepageLink-extension")));
+			driver.findElement(By.cssSelector("#referenceapplication-registrationapp-registerPatient-homepageLink-referenceapplication-registrationapp-registerPatient-homepageLink-extension")).click();
+		}
+		catch(Exception e){
+			fail("Unable to click on Register a Patient Icon from HomePage");
 		}
 		return new HomePage(driver);
 		
