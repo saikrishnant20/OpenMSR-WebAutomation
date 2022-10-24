@@ -11,11 +11,14 @@ import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import openmrspages.FindPatientRecord;
 import openmrspages.HomePage;
 import openmrspages.LoginPage;
 import openmrspages.PatientDetailPage;
 import openmrspages.RegisterPage;
+import openmrspages.ScheduleAppointment;
 import openmrspages.baseDriver;
+import testdatafilereader.ExistingPatientDetails;
 import testdatafilereader.RegisterNewPatientDetails;
 import testdatafilereader.URLProperties;
 import testdatafilereader.UserLoginDetails;
@@ -27,6 +30,8 @@ public class openmrs_steps {
 	HomePage homepage;
 	RegisterPage registerpage;
 	PatientDetailPage patientdetailpage;
+	FindPatientRecord findpatientrecord;
+	ScheduleAppointment schedulesppointment;
 	@Before public static void browser()
 	{
 //		ChromeOptions options=new ChromeOptions();
@@ -35,9 +40,7 @@ public class openmrs_steps {
 //		driver=new ChromeDriver(options);
 		driver=new ChromeDriver();
 		driver.manage().window().maximize();
-		driver.manage().deleteAllCookies();
-		
-		
+		driver.manage().deleteAllCookies();	
 	}
 
 	@Given("User enters OpenMRS url in the browser")
@@ -73,7 +76,6 @@ public class openmrs_steps {
 	@Then("User click on Logout button from the OpenMRS Application")
 	public void user_click_on_logout_button_from_the_open_mrs_application() throws InterruptedException {
 		homepage.clickOnLogout();
-//		Thread.sleep(5000);
 	}
 
 	@Then("User able to see the Login page successfully")
@@ -159,32 +161,146 @@ public class openmrs_steps {
 	
 	@Then("User able to click the Find Patient Record icon from home page")
 	public void user_able_to_click_the_find_patient_record_icon_from_home_page() {
-	    // Write code here that turns the phrase above into concrete actions
-	    throw new io.cucumber.java.PendingException();
+		homepage.clickOnFindPatientRecordIcon();
 	}
 
 	@Then("User should redirect to Find Patient Record page")
 	public void user_should_redirect_to_find_patient_record_page() {
-	    // Write code here that turns the phrase above into concrete actions
-	    throw new io.cucumber.java.PendingException();
-	}
-
-	@Then("User able to see the Search text box in the Find Patient Record page")
-	public void user_able_to_see_the_search_text_box_in_the_find_patient_record_page() {
-	    // Write code here that turns the phrase above into concrete actions
-	    throw new io.cucumber.java.PendingException();
+		findpatientrecord=new FindPatientRecord(driver);
+		findpatientrecord.findPatientRecordPage();
 	}
 
 	@When("User is enter the Patient ID in the Search text box")
-	public void user_is_enter_the_patient_id_in_the_search_text_box() {
-	    // Write code here that turns the phrase above into concrete actions
-	    throw new io.cucumber.java.PendingException();
+	public void user_is_enter_the_patient_id_in_the_search_text_box() throws IOException {
+		String patientId=ExistingPatientDetails.getValue("Identifier");
+		findpatientrecord.searchPatientID(patientId);
 	}
 
 	@Then("User is able to see the Patient record result for the Patient ID")
-	public void user_is_able_to_see_the_patient_record_result_for_the_patient_id() {
-	    // Write code here that turns the phrase above into concrete actions
-	    throw new io.cucumber.java.PendingException();
+	public void user_is_able_to_see_the_patient_record_result_for_the_patient_id() throws IOException, InterruptedException {
+		Thread.sleep(2000);
+		String patientId=ExistingPatientDetails.getValue("Identifier");
+		String name=ExistingPatientDetails.getValue("Name");
+		String gender=ExistingPatientDetails.getValue("Gender");
+		String age=ExistingPatientDetails.getValue("Age");
+		String birthDate=ExistingPatientDetails.getValue("Birthdate");
+		findpatientrecord.patientRecordResult(patientId,name,gender,age,birthDate);
+	}
+	
+	@When("Click the Patient record from the search result")
+	public void click_the_patient_record_from_the_search_result() {
+		findpatientrecord.openpatientRecord();
+	}
+
+	@Then("User should able to view and validate the full history of existing Patient record")
+	public void user_should_able_to_view_and_validate_the_full_history_of_existing_patient_record() throws IOException {
+		patientdetailpage = new PatientDetailPage(driver);
+		String givenName=ExistingPatientDetails.getValue("Given");
+		String familyName=ExistingPatientDetails.getValue("FamilyName");
+		String phoneNumber=ExistingPatientDetails.getValue("Phone-Number");
+		String patientId=ExistingPatientDetails.getValue("Identifier");
+		patientdetailpage.viewPatientIDDetails(givenName,familyName,phoneNumber,patientId);
+	}
+	
+	@When("Click the Schedule Appointment under General Actions section")
+	public void click_the_schedule_appointment_under_general_actions_section() {
+		patientdetailpage = new PatientDetailPage(driver);
+		patientdetailpage.clickScheduleAppointmentLink();
+	}
+
+	@Then("User able to see the Schedule a New Appointment option")
+	public void user_able_to_see_the_schedule_a_new_appointment_option() {
+		schedulesppointment=new ScheduleAppointment(driver);
+		schedulesppointment.scheduleNewAppointment();
+	}
+
+	@Then("User able to select Service Type using search box")
+	public void user_able_to_select_service_type_using_search_box() throws IOException {
+		String serviceType=ExistingPatientDetails.getValue("ServiceType");
+		schedulesppointment.selectServiceType(serviceType);
+	}
+
+	@Then("Click the Search button")
+	public void click_the_search_button() {
+		schedulesppointment.clickSearchbuuton();
+	}
+
+	@Then("User able to select the available slots")
+	public void user_able_to_select_the_available_slots() {
+		schedulesppointment.selectSlot();
+	}
+
+	@Then("Click the Next button after select slot")
+	public void click_the_next_button_after_select_slot() {
+		schedulesppointment.clickNextButton();
+	}
+
+	@Then("User should redirect to Appointment Requests page")
+	public void user_should_redirect_to_appointment_requests_page() {
+		schedulesppointment.appointmentRequestFinalPage();
+	}
+
+	@Then("Click the Save the Appointment request")
+	public void click_the_save_the_appointment_request() throws InterruptedException {
+		Thread.sleep(3000);
+		schedulesppointment.saveAppointmentRequest();
+	}
+
+	@Then("User able to see the booked Appointment details")
+	public void user_able_to_see_the_booked_appointment_details() {
+		schedulesppointment.getAppointmentDetails();
+	}
+	
+	@Then("Click the Start Visit")
+	public void click_the_start_visit() {
+		patientdetailpage = new PatientDetailPage(driver);
+		patientdetailpage.clickStartVisit();
+	}
+
+	@Then("Click the Confirm")
+	public void click_the_confirm() {
+		patientdetailpage.clickConfirm();
+	}
+
+	@Then("Click the Attachments button")
+	public void click_the_attachments_button() {
+		patientdetailpage.clickAttachement();
+	}
+
+	@Then("Click the area contain Click or drop a file here")
+	public void click_the_area_contain_click_or_drop_a_file_here() {
+		patientdetailpage.uploadFile();
+	}
+
+	@Then("Enter the Caption")
+	public void enter_the_caption() {
+		patientdetailpage.enterCaption();
+	}
+
+	@Then("Click the Upload file button")
+	public void click_the_upload_file_button() {
+		patientdetailpage.clickUploadFileButton();
+	}
+	
+	@Then("Click the Delete Patient link under General Actions section")
+	public void click_the_delete_patient_link_under_general_actions_section() {
+		patientdetailpage = new PatientDetailPage(driver);
+		patientdetailpage.clickDeletePatient();
+	}
+
+	@Then("User able to get popup for confirmation with Reason and Cancel and Confirm button")
+	public void user_able_to_get_popup_for_confirmation_with_reason_and_cancel_and_confirm_button() {
+		patientdetailpage.getPopupConfDelete();
+	}
+
+	@Then("Enter the Reason for DELETE the patient details")
+	public void enter_the_reason_for_delete_the_patient_details() {
+		patientdetailpage.enterReasonDelete();
+	}
+
+	@Then("Click the Confirm button for DELETE the patient details")
+	public void click_the_confirm_button_for_delete_the_patient_details() {
+		patientdetailpage.confirmDeletePatient();
 	}
 	
 	@After public static void TearDown()

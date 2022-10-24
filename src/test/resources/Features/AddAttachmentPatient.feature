@@ -7,10 +7,15 @@ Feature: Add an attachment for the exiting Patient
     And Choose the Inpatient Ward from the Loaction for this session
     Then User click on Log in button
     Then OpenMRS home page should be opened successfully
-	  Then User should able to click the Find Patient Record icon from home page
+	  Then User able to click the Find Patient Record icon from home page
 	  Then User should redirect to Find Patient Record page
-	  Then User able to see the Search text box in the Find Patient Record page
-	  When User should able to enter the Patient ID in the Search text box
+	  When User is enter the Patient ID in the Search text box
 	  Then User is able to see the Patient record result for the Patient ID
 	  When Click the Patient record from the search result
-	  And 
+	  Then User should able to view and validate the full history of existing Patient record
+	  Then Click the Start Visit
+	  Then Click the Confirm
+	  Then Click the Attachments button
+	  Then Click the area contain Click or drop a file here
+	  Then Enter the Caption 
+	  Then Click the Upload file button

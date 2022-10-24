@@ -1,6 +1,6 @@
 Feature: Find patient Record
 
- @PatientRecord @Regression
+ @FindPatientRecord @Regression
   Scenario: Validate User is able to see patient record successfully in the OpenMRS Application
     Given User enters OpenMRS url in the browser
     When Enter the valid Username and Password in the OpenMRS login page
@@ -9,6 +9,5 @@ Feature: Find patient Record
     Then OpenMRS home page should be opened successfully
 	  Then User able to click the Find Patient Record icon from home page
 	  Then User should redirect to Find Patient Record page
-	  Then User able to see the Search text box in the Find Patient Record page
 	  When User is enter the Patient ID in the Search text box
 	  Then User is able to see the Patient record result for the Patient ID

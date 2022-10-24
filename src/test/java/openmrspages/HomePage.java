@@ -58,4 +58,17 @@ public class HomePage extends baseDriver {
 		
 	}
 
+	public HomePage clickOnFindPatientRecordIcon() {
+		try {
+			WebDriverWait waitclickregpatient = new WebDriverWait(driver, Duration.ofSeconds(5));
+			waitclickregpatient.until(ExpectedConditions.visibilityOfElementLocated(By.id("coreapps-activeVisitsHomepageLink-coreapps-activeVisitsHomepageLink-extension")));
+			driver.findElement(By.id("coreapps-activeVisitsHomepageLink-coreapps-activeVisitsHomepageLink-extension")).click();
+		}
+		catch(Exception e){
+			fail("Unable to click on Find Patient Record Icon from HomePage");
+		}
+		return new HomePage(driver);
+		
+	}
+
 }
